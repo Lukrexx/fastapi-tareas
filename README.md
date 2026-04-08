@@ -21,13 +21,22 @@ API de gestión de tareas con autenticación JWT y soporte multiusuario.
 ## 🔐 Uso
 
 1. Registrar usuario:
-POST /registro
+POST /auth/registro
 
 2. Login:
-POST /login
+POST /auth/login
 
 3. Usar token:
 Authorization: Bearer <token>
 
 4. Obtener tareas:
 GET /tareas
+
+5. crear tareas:
+post /tareas
+
+6. eliminar tareas:
+delete /tareas
+
+6. editar tareas:
+put /tareas
