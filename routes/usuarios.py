@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, HTTPException
 from database import SessionLocal
 from models import Usuario
 from auth import hash_password,verificar_password,crear_token
 
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 #registro
 @router.post("/registro")
 def registrar(username: str, password: str):
@@ -12,7 +12,7 @@ def registrar(username: str, password: str):
 
     usuario_existente = db.query(Usuario).filter(Usuario.username == username).first()
     if usuario_existente:
-        return {"error": "usuario ya existe"}
+        raise HTTPException(status_code=400, detail="usuario ya existe")
 
     nuevo = Usuario(username=username, password=hash_password(password))
     db.add(nuevo)
@@ -28,7 +28,7 @@ def login(username: str, password: str):
     usuario = db.query(Usuario).filter(Usuario.username == username).first()
 
     if not usuario or not verificar_password(password, usuario.password):
-        return {"error": "credenciales incorrectas"}
+        raise HTTPException(status_code=400, detail="credenciales incorrectas")
 
     token = crear_token({"sub": usuario.username})
 

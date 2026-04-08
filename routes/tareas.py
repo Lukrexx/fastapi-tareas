@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from schemas import TareaCreate
 from auth import verificar_token
 from database import SessionLocal
 from models import Tarea
 
-router = APIRouter()
+router = APIRouter(prefix="/tareas", tags=["tareas"])
 
 # Obtener tareas
 @router.get("/tareas")
@@ -34,14 +34,14 @@ def eliminar_tarea(id: int, user=Depends(verificar_token)):
     db = SessionLocal()
     username = user["sub"]
 
-    tarea = db.query(Tarea).filter(Tarea.id == id, Tarea.usuario == username).first()
+    tarea_db = db.query(Tarea).filter(Tarea.id == id, Tarea.usuario == username).first()
 
-    if tarea:
-        db.delete(tarea)
+    if tarea_db:
+        db.delete(tarea_db)
         db.commit()
         return {"mensaje": "Tarea eliminada"}
     
-    return {"error": "No encontrada"}
+    raise HTTPException(status_code=400, detail="No encontrada")
 
 #editar tareas 
 @router.put("/tareas/{id}")
@@ -56,4 +56,4 @@ def actualizar_tarea(id: int, nueva_tarea: TareaCreate, user=Depends(verificar_t
         db.commit()
         return {"mensaje": "Actualizada"}
     
-    return {"error": "No encontrada"}
+    raise HTTPException(status_code=400, detail="No encontrada")
