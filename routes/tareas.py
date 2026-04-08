@@ -20,7 +20,7 @@ def crear_tarea(tarea: TareaCreate, user=Depends(verificar_token)):
     username = user["sub"]
     nueva = Tarea(
         nombre=tarea.nombre,
-        usuario=username  # clave
+        usuario=username,  
     )
     db.add(nueva)
     db.commit()

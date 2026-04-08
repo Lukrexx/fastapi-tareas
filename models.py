@@ -1,5 +1,6 @@
 from database import Base, engine
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String,DateTime
+from datetime import datetime
 
 #usuarios 
 class Usuario(Base):
@@ -15,5 +16,6 @@ class Tarea(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String)
     usuario = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(bind=engine)
