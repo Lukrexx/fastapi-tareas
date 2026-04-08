@@ -8,8 +8,7 @@ from auth import hash_password,verificar_password,crear_token
 router = APIRouter(prefix="/auth", tags=["auth"])
 #registro
 @router.post("/registro")
-def registrar(username: str, password: str):
-    db: Session = Depends(get_db)
+def registrar(username: str, password: str, db: Session = Depends(get_db)):
 
     usuario_existente = db.query(Usuario).filter(Usuario.username == username).first()
     if usuario_existente:
@@ -24,8 +23,7 @@ def registrar(username: str, password: str):
 
 #logueo
 @router.post("/login")
-def login(username: str, password: str):
-    db: Session = Depends(get_db)
+def login(username: str, password: str, db: Session = Depends(get_db)):
     usuario = db.query(Usuario).filter(Usuario.username == username).first()
 
     if not usuario or not verificar_password(password, usuario.password):

@@ -11,15 +11,13 @@ router = APIRouter(prefix="/tareas", tags=["tareas"])
 
 # Obtener tareas
 @router.get("/tareas")
-def obtener_tareas(user=Depends(verificar_token)):
-    db: Session = Depends(get_db)
+def obtener_tareas(user=Depends(verificar_token), db: Session = Depends(get_db)):
     username = user["sub"]  # viene del token
     return db.query(Tarea).filter(Tarea.usuario == username).all()
 
 # Crear tarea
 @router.post("/tareas")
-def crear_tarea(tarea: TareaCreate, user=Depends(verificar_token)):
-    db: Session = Depends(get_db)
+def crear_tarea(tarea: TareaCreate, user=Depends(verificar_token), db: Session = Depends(get_db)):
     username = user["sub"]
     nueva = Tarea(
         nombre=tarea.nombre,
@@ -33,8 +31,7 @@ def crear_tarea(tarea: TareaCreate, user=Depends(verificar_token)):
 
 #eliminar tareas
 @router.delete("/tareas/{id}")
-def eliminar_tarea(id: int, user=Depends(verificar_token)):
-    db: Session = Depends(get_db)
+def eliminar_tarea(id: int, user=Depends(verificar_token), db: Session = Depends(get_db)):
     username = user["sub"]
 
     tarea_db = db.query(Tarea).filter(Tarea.id == id, Tarea.usuario == username).first()
@@ -49,8 +46,7 @@ def eliminar_tarea(id: int, user=Depends(verificar_token)):
 
 #editar tareas 
 @router.put("/tareas/{id}")
-def actualizar_tarea(id: int, nueva_tarea: TareaCreate, user=Depends(verificar_token)):
-    db: Session = Depends(get_db)
+def actualizar_tarea(id: int, nueva_tarea: TareaCreate, user=Depends(verificar_token), db: Session = Depends(get_db)):
     username = user["sub"]
 
     tarea_db = db.query(Tarea).filter(Tarea.id == id, Tarea.usuario == username).first()
