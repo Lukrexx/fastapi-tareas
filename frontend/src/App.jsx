@@ -20,7 +20,24 @@ function App() {
     console.log("DATA:", data)
 
     setToken(data.access_token)
+    localStorage.setItem("token", data.access_token)
   }
+  const [tareas, setTareas] = useState([])
+  const obtenerTareas = async () => {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${API}/tareas/tareas`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const data = await res.json()
+
+  console.log("TAREAS:", data)
+
+  setTareas(data)
+}
 
   return (
     <div style={{ padding: 20 }}>
@@ -44,6 +61,13 @@ function App() {
       <br /><br />
 
       <button onClick={login}>Login</button>
+      <button onClick={obtenerTareas}>Ver tareas</button>
+
+      <ul>
+        {tareas.map((t) => (
+          <li key={t.id}>{t.nombre}</li>
+        ))}
+      </ul>
 
       <h3>Token:</h3>
       <p>{token}</p>
